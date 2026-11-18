@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ProtegeKids – Prototipo de baja fidelidad</title>
+<style>
+:root{--bg:#EAF1F8;--card:#fff;--ink:#12263A;--mut:#566A7F;--pri:#1F6FEB;--onpri:#fff;--ok:#17996B;--warn:#C98A0B;--bad:#C93C3C;--line:#D5E0EB;--soft:#F3F7FB;--phone:#12263A;color-scheme:light;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0B141F;--card:#16243A;--ink:#E8F0FA;--mut:#9DB0C7;--pri:#5B9BFF;--onpri:#08162B;--ok:#3CC796;--warn:#E8B23C;--bad:#F07878;--line:#2A3D57;--soft:#102033;--phone:#02060B;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0B141F;--card:#16243A;--ink:#E8F0FA;--mut:#9DB0C7;--pri:#5B9BFF;--onpri:#08162B;--ok:#3CC796;--warn:#E8B23C;--bad:#F07878;--line:#2A3D57;--soft:#102033;--phone:#02060B;color-scheme:dark}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Trebuchet MS","Segoe UI",Verdana,sans-serif;line-height:1.4}
+.wrap{max-width:980px;margin:0 auto;padding:20px 16px 32px;display:grid;grid-template-columns:240px 1fr;gap:28px;align-items:start}
+h1{font-size:20px;margin:0 0 4px}
+.sub{color:var(--mut);font-size:13px;margin:0 0 14px}
+.nav{display:flex;flex-direction:column;gap:6px}
+.nav button{all:unset;cursor:pointer;padding:9px 12px;border-radius:10px;border:1px solid var(--line);background:var(--card);font-size:14px}
+.nav button[aria-current="true"]{background:var(--pri);color:var(--onpri);border-color:var(--pri)}
+.nav button:focus-visible,.btn:focus-visible,.tab:focus-visible,.seg button:focus-visible{outline:3px solid var(--warn);outline-offset:2px}
+.cap{margin-top:14px;padding:12px;border-left:4px solid var(--ok);background:var(--card);border-radius:0 10px 10px 0;font-size:13px}
+.cap b{display:block;margin-bottom:2px}
+.stage{display:flex;justify-content:center}
+.phone{width:340px;height:680px;background:var(--phone);border-radius:38px;padding:10px;box-shadow:0 10px 30px rgba(10,30,50,.25)}
+.screen-area{width:100%;height:100%;background:var(--bg);border-radius:29px;overflow:hidden;position:relative;display:flex;flex-direction:column}
+.screen{display:none;flex:1;flex-direction:column;overflow-y:auto;padding:22px 18px 12px}
+.screen.on{display:flex}
+.screen h2{font-size:21px;margin:0 0 4px}
+.screen p{margin:0 0 12px;color:var(--mut);font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:10px}
+.btn{all:unset;cursor:pointer;display:block;text-align:center;padding:12px;border-radius:12px;background:var(--pri);color:var(--onpri);font-weight:700;margin-top:8px}
+.btn.alt{background:transparent;color:var(--pri);border:2px solid var(--pri)}
+.logo{width:76px;height:76px;border-radius:22px;background:var(--pri);color:var(--onpri);display:grid;place-items:center;font-size:36px;margin:30px auto 12px}
+.center{text-align:center}
+.tabs{display:flex;border-top:1px solid var(--line);background:var(--card)}
+.tabs.hide{display:none}
+.tab{all:unset;cursor:pointer;flex:1;text-align:center;font-size:11px;padding:9px 2px;color:var(--mut)}
+.tab span{display:block;font-size:18px}
+.tab[aria-current="true"]{color:var(--pri);font-weight:700}
+.steps{display:flex;gap:6px;margin-bottom:14px}
+.steps i{flex:1;height:6px;border-radius:3px;background:var(--line)}
+.steps i.on{background:var(--pri)}
+.field{border:1px dashed var(--mut);border-radius:10px;padding:10px;margin-bottom:8px;font-size:14px;color:var(--mut);background:var(--card)}
+.row{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.tag{font-size:11px;padding:2px 8px;border-radius:99px;border:1px solid currentColor;white-space:nowrap}
+.tag.ok{color:var(--ok)}.tag.warn{color:var(--warn)}.tag.bad{color:var(--bad)}
+.map{height:210px;border-radius:14px;border:1px solid var(--line);margin-bottom:10px;position:relative;overflow:hidden;
+background:linear-gradient(90deg,transparent 48%,var(--line) 48% 52%,transparent 52%),linear-gradient(transparent 60%,var(--line) 60% 64%,transparent 64%),var(--soft)}
+.zone{position:absolute;width:90px;height:90px;border-radius:50%;border:2px dashed var(--ok);left:30%;top:22%;background:rgba(23,153,107,.12)}
+.pin{position:absolute;left:46%;top:42%;font-size:30px;animation:pulse 1.8s infinite}
+@keyframes pulse{50%{transform:translateY(-5px)}}
+@media (prefers-reduced-motion:reduce){.pin{animation:none}}
+.ring{--p:60;width:130px;height:130px;border-radius:50%;margin:6px auto 12px;display:grid;place-items:center;background:conic-gradient(var(--pri) calc(var(--p)*1%),var(--line) 0)}
+.ring div{width:96px;height:96px;border-radius:50%;background:var(--bg);display:grid;place-items:center;text-align:center;font-weight:700;font-size:15px}
+.bar{height:8px;border-radius:4px;background:var(--line);overflow:hidden;margin-top:6px}
+.bar i{display:block;height:100%;background:var(--pri)}
+input[type=range]{width:100%}
+.seg{display:flex;gap:6px;margin-bottom:10px}
+.seg button{all:unset;cursor:pointer;flex:1;text-align:center;padding:10px 0;border-radius:10px;border:1px solid var(--line);background:var(--card);font-weight:700;font-size:14px}
+.seg button[aria-pressed="true"]{background:var(--pri);color:var(--onpri);border-color:var(--pri)}
+.switch{all:unset;cursor:pointer;width:46px;height:26px;border-radius:13px;background:var(--line);position:relative;flex:none}
+.switch::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:left .15s}
+.switch[aria-checked="true"]{background:var(--ok)}
+.switch[aria-checked="true"]::after{left:23px}
+.switch:focus-visible{outline:3px solid var(--warn);outline-offset:2px}
+.kid{background:var(--soft)}
+.note{font-size:12px;color:var(--mut);text-align:center;margin-top:12px}
+@media (max-width:760px){.wrap{grid-template-columns:1fr}.nav{flex-direction:row;flex-wrap:wrap}.nav button{font-size:12px;padding:7px 9px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+ <aside>
+  <h1>ProtegeKids</h1>
+  <p class="sub">Prototipo de baja fidelidad. Navega con el menú o tocando dentro del celular.</p>
+  <nav class="nav" id="nav" aria-label="Pantallas del prototipo"></nav>
+  <div class="cap" id="cap" aria-live="polite"></div>
+ </aside>
+
+ <main class="stage">
+  <div class="phone"><div class="screen-area">
+
+   <!-- 1 Bienvenida -->
+   <section class="screen" data-s="1">
+    <div class="logo" aria-hidden="true">🛡️</div>
+    <h2 class="center">ProtegeKids</h2>
+    <p class="center">Acompañar, no espiar. Tranquilidad para ti, confianza para tu hijo.</p>
+    <div style="flex:1"></div>
+    <button class="btn" data-go="2">Soy padre o madre</button>
+    <button class="btn alt" data-go="8">Soy hijo o hija</button>
+    <div class="note">Precio en pesos colombianos · App en español</div>
+   </section>
+
+   <!-- 2 Configuración -->
+   <section class="screen" data-s="2">
+    <div class="steps" id="steps"><i class="on"></i><i></i><i></i></div>
+    <div id="setup"></div>
+   </section>
+
+   <!-- 3 Inicio -->
+   <section class="screen" data-s="3">
+    <h2>Hola, Laura 👋</h2>
+    <p>Así va el día de Sofía (12 años).</p>
+    <button class="card" data-go="4" style="all:unset;display:block;cursor:pointer;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:10px">
+     <div class="row"><b>📍 Ubicación</b><span class="tag ok">En el colegio</span></div>
+     <div style="font-size:13px;color:var(--mut)">Actualizada hace 2 min</div>
+    </button>
+    <button data-go="5" style="all:unset;display:block;cursor:pointer;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:10px">
+     <div class="row"><b>⏱️ Tiempo de pantalla</b><span class="tag warn">1 h 30 de 2 h</span></div>
+     <div class="bar"><i style="width:75%"></i></div>
+    </button>
+    <button data-go="6" style="all:unset;display:block;cursor:pointer;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:10px">
+     <div class="row"><b>🔔 Alertas</b><span class="tag bad">1 importante</span></div>
+     <div style="font-size:13px;color:var(--mut)">Solo te avisamos lo que importa.</div>
+    </button>
+    <button class="btn alt" data-go="7">Nivel de supervisión: 10–13 años</button>
+   </section>
+
+   <!-- 4 Ubicación -->
+   <section class="screen" data-s="4">
+    <h2>Ubicación de Sofía</h2>
+    <p>En tiempo real, con zonas seguras.</p>
+    <div class="map" role="img" aria-label="Mapa simulado con la ubicación de Sofía"><div class="zone"></div><div class="pin">📍</div></div>
+    <div class="card"><div class="row"><b>Colegio San Martín</b><span class="tag ok">Zona segura</span></div><div style="font-size:13px;color:var(--mut)">Llegó a las 6:52 a. m.</div></div>
+    <div class="card"><div class="row"><b>Casa</b><span class="tag ok">Zona segura</span></div><div style="font-size:13px;color:var(--mut)">Te avisamos cuando llegue.</div></div>
+   </section>
+
+   <!-- 5 Tiempo de pantalla -->
+   <section class="screen" data-s="5">
+    <h2>Tiempo de pantalla</h2>
+    <p>Define el límite diario con tu hijo.</p>
+    <div class="ring" id="ring"><div id="ringTxt">1 h 30<br>de 2 h</div></div>
+    <div class="card">
+     <div class="row"><b>Límite diario</b><span id="limTxt">2 h</span></div>
+     <input type="range" id="lim" min="1" max="4" step="0.5" value="2" aria-label="Límite diario en horas">
+    </div>
+    <div class="card"><div class="row"><span>🎮 Juegos</span><span>45 min</span></div><div class="bar"><i style="width:50%"></i></div></div>
+    <div class="card"><div class="row"><span>💬 Mensajería</span><span>30 min</span></div><div class="bar"><i style="width:33%"></i></div></div>
+    <div class="card"><div class="row"><span>▶️ Videos</span><span>15 min</span></div><div class="bar"><i style="width:17%"></i></div></div>
+   </section>
+
+   <!-- 6 Alertas -->
+   <section class="screen" data-s="6">
+    <h2>Alertas de riesgo</h2>
+    <p>Como un banco: solo lo importante.</p>
+    <div class="card"><div class="row"><b>Solo importantes</b><button class="switch" id="onlyImp" role="switch" aria-checked="true" aria-label="Mostrar solo alertas importantes"></button></div></div>
+    <div class="card" data-lvl="alta"><div class="row"><b>⚠️ Posible grooming</b><span class="tag bad">Alta</span></div><div style="font-size:13px;color:var(--mut)">Un adulto desconocido pidió fotos en un chat de juego. Te sugerimos hablar con Sofía.</div></div>
+    <div class="card" data-lvl="media"><div class="row"><b>Contenido inapropiado</b><span class="tag warn">Media</span></div><div style="font-size:13px;color:var(--mut)">Se bloqueó un sitio para mayores de 18.</div></div>
+    <div class="card" data-lvl="baja"><div class="row"><b>App nueva instalada</b><span class="tag ok">Baja</span></div><div style="font-size:13px;color:var(--mut)">Sofía instaló una app de dibujo.</div></div>
+    <button class="btn alt" data-go="8">Ver cómo lo ve Sofía</button>
+   </section>
+
+   <!-- 7 Niveles -->
+   <section class="screen" data-s="7">
+    <h2>Nivel de supervisión</h2>
+    <p>Se ajusta a la edad de tu hijo.</p>
+    <div class="seg" id="seg">
+     <button aria-pressed="false">6–9</button><button aria-pressed="true">10–13</button><button aria-pressed="false">14–17</button>
+    </div>
+    <div class="card"><b id="lvlT"></b><div id="lvlD" style="font-size:13px;color:var(--mut);margin-top:4px"></div></div>
+    <div class="card">
+     <div class="row"><div><b>Bajar control con la confianza</b><div style="font-size:12px;color:var(--mut)">Más buen comportamiento, más libertad.</div></div><button class="switch" id="trustSw" role="switch" aria-checked="true" aria-label="Bajar control con la confianza"></button></div>
+     <div class="bar"><i style="width:65%"></i></div>
+     <div style="font-size:12px;color:var(--mut);margin-top:4px">Nivel de confianza de Sofía: 65 %</div>
+    </div>
+   </section>
+
+   <!-- 8 Hijo -->
+   <section class="screen kid" data-s="8">
+    <div class="logo" aria-hidden="true" style="margin-top:14px">🛡️</div>
+    <h2 class="center">Hola, Sofía</h2>
+    <p class="center">ProtegeKids está activo en tu celular. Tus papás lo saben y tú también.</p>
+    <div class="card"><b>✅ Lo que pueden ver</b><div style="font-size:13px;color:var(--mut)">Dónde estás y cuánto tiempo usas el celular.</div></div>
+    <div class="card"><b>🔒 Lo que no ven</b><div style="font-size:13px;color:var(--mut)">El contenido de tus chats. Solo reciben alertas de riesgo real.</div></div>
+    <div class="card"><b>⭐ Tu confianza: 65 %</b><div style="font-size:13px;color:var(--mut)">Cuanto más crece, menos control tienen.</div></div>
+    <button class="btn alt" data-go="1">Volver al inicio</button>
+   </section>
+
+   <div class="tabs hide" id="tabs">
+    <button class="tab" data-go="3"><span>🏠</span>Inicio</button>
+    <button class="tab" data-go="4"><span>📍</span>Ubicación</button>
+    <button class="tab" data-go="5"><span>⏱️</span>Tiempo</button>
+    <button class="tab" data-go="6"><span>🔔</span>Alertas</button>
+    <button class="tab" data-go="7"><span>🎚️</span>Niveles</button>
+   </div>
+  </div></div>
+ </main>
+</div>
+
+<script>
+var INFO={
+1:["Bienvenida","Español, precio en pesos y un mensaje claro: acompañar, no espiar."],
+2:["Configuración en 3 pasos","Alivia el dolor de las apps complicadas: crear cuenta, agregar al hijo y vincular su celular."],
+3:["Panel principal","Reúne ubicación, tiempo de pantalla y alertas en una sola app."],
+4:["Ubicación en tiempo real","Tranquilidad: sabes dónde está tu hijo y recibes aviso al llegar a zonas seguras."],
+5:["Tiempo de pantalla","Se define el límite con el hijo, lo que evita peleas por el celular."],
+6:["Alertas de riesgo","Alertas tipo banco: avisa de ciberacoso, grooming y contenido riesgoso sin saturar."],
+7:["Niveles por edad","Supervisión de 6–9, 10–13 y 14–17 años que baja a medida que crece la confianza."],
+8:["Vista del hijo","Diferencial clave: supervisión transparente. El hijo sabe qué se ve y qué no."]};
+var LV=[["Nivel 1 · 6 a 9 años","Control alto: apps aprobadas por los padres, ubicación y límite de tiempo estricto."],
+["Nivel 2 · 10 a 13 años","Control medio: límites de tiempo, ubicación y alertas de riesgo importantes."],
+["Nivel 3 · 14 a 17 años","Control bajo: solo ubicación y alertas de riesgo grave. Más privacidad."]];
+var cur=1,step=1;
+var $=function(q,r){return (r||document).querySelector(q)};
+var $$=function(q,r){return Array.prototype.slice.call((r||document).querySelectorAll(q))};
+
+var nav=$("#nav");
+for(var i=1;i<=8;i++){(function(n){var b=document.createElement("button");b.textContent=n+". "+INFO[n][0];b.onclick=function(){go(n)};nav.appendChild(b)})(i)}
+
+function go(n){
+ cur=n;
+ $$(".screen").forEach(function(s){s.classList.toggle("on",+s.dataset.s===n)});
+ $$("#nav button").forEach(function(b,i){b.setAttribute("aria-current",i+1===n?"true":"false")});
+ $$(".tab").forEach(function(t){t.setAttribute("aria-current",+t.dataset.go===n?"true":"false")});
+ $("#tabs").classList.toggle("hide",n<3||n===8);
+ $("#cap").innerHTML="<b>Pantalla "+n+": "+INFO[n][0]+"</b>"+INFO[n][1];
+ if(n===2){step=1;renderSetup()}
+ $(".screen.on").scrollTop=0;
+}
+$$("[data-go]").forEach(function(b){b.addEventListener("click",function(){go(+b.dataset.go)})});
+
+function renderSetup(){
+ $$("#steps i").forEach(function(e,i){e.classList.toggle("on",i<step)});
+ var h="";
+ if(step===1)h="<h2>Crea tu cuenta</h2><p>Paso 1 de 3</p><div class='field'>Nombre completo</div><div class='field'>Correo electrónico</div><div class='field'>Contraseña</div><button class='btn' id='nx'>Continuar</button>";
+ if(step===2)h="<h2>Agrega a tu hijo</h2><p>Paso 2 de 3</p><div class='field'>Nombre: Sofía</div><div class='field'>Edad: 12 años</div><div class='card' style='font-size:13px'>Con la edad elegimos un nivel de supervisión recomendado.</div><button class='btn' id='nx'>Continuar</button>";
+ if(step===3)h="<h2>Vincula su celular</h2><p>Paso 3 de 3</p><div class='card center'><div style='font-size:13px;color:var(--mut)'>Ingresa este código en el celular de Sofía</div><div style='font-size:30px;font-weight:700;letter-spacing:6px;margin-top:6px'>482 915</div></div><div class='card' style='font-size:13px'>Sofía verá que ProtegeKids está instalada y aceptará la supervisión.</div><button class='btn' id='nx'>Terminar configuración</button>";
+ $("#setup").innerHTML=h;
+ $("#nx").onclick=function(){if(step<3){step++;renderSetup()}else go(3)};
+}
+
+function fmt(h){var m=Math.round(h*60);return Math.floor(m/60)+" h"+(m%60?" "+m%60:"")}
+$("#lim").oninput=function(){
+ var l=+this.value,u=1.5,p=Math.min(100,Math.round(u/l*100));
+ $("#limTxt").textContent=fmt(l);
+ $("#ring").style.setProperty("--p",p);
+ $("#ringTxt").innerHTML=fmt(u)+"<br>de "+fmt(l);
+};
+function tog(el){el.onclick=function(){el.setAttribute("aria-checked",el.getAttribute("aria-checked")==="true"?"false":"true");if(el.id==="onlyImp")filt()}}
+function filt(){var on=$("#onlyImp").getAttribute("aria-checked")==="true";$$("[data-lvl='baja']").forEach(function(c){c.style.display=on?"none":"block"})}
+tog($("#onlyImp"));tog($("#trustSw"));filt();
+function lvl(i){
+ $$("#seg button").forEach(function(b,j){b.setAttribute("aria-pressed",j===i?"true":"false")});
+ $("#lvlT").textContent=LV[i][0];$("#lvlD").textContent=LV[i][1];
+}
+$$("#seg button").forEach(function(b,i){b.onclick=function(){lvl(i)}});
+lvl(1);go(1);
+</script>
+</body>
+</html>
